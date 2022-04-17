@@ -1,6 +1,5 @@
 package com.example.mad_composable.screens
 
-import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -16,16 +15,20 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.mad_composable.MovieRow
+import com.example.mad_composable.navigation.MovieScreens
 import com.example.mad_composable.ui.theme.MAD_ComposableTheme
+import com.example.mad_composable.viewmodels.FavoritViewModel
+import com.example.mad_composable.widgets.FavoritIcon
+import com.example.mad_composable.widgets.MovieRow
 import com.example.testapp.models.Movie
 import com.example.testapp.models.getMovies
 
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController,FavoritViewModel: FavoritViewModel = viewModel()) {
     var showMenu by remember {
         mutableStateOf(false)
     }
@@ -34,7 +37,6 @@ fun HomeScreen(navController: NavController) {
     MAD_ComposableTheme {
         // A surface container using the 'background' color from the theme
         Scaffold(
-            //modifier = Modifier.fillMaxSize(),
             topBar = {
                 TopAppBar(title = { Text(text = "Movies") },
                     actions = {
@@ -45,7 +47,7 @@ fun HomeScreen(navController: NavController) {
                             )
                         }
                         DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
-                            DropdownMenuItem(onClick = { /*TODO*/ }) {
+                            DropdownMenuItem(onClick = { navController.navigate(MovieScreens.Favoritscreen.name)}) {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.Center
@@ -53,7 +55,7 @@ fun HomeScreen(navController: NavController) {
                                     Icon(
                                         imageVector = Icons.Default.Favorite,
                                         contentDescription = "Favorites",
-                                        Modifier.padding(4.dp)
+                                        Modifier.padding(4.dp),
                                     )
                                     Text(text = "Favorites", modifier = Modifier.width(100.dp))
                                 }
@@ -64,20 +66,37 @@ fun HomeScreen(navController: NavController) {
 
             }
         ) {
-            MainContent(getMovies(), navController)
+            MainContent(
+                getMovies(),
+                navController = navController,
+                FavoritViewModel
+            )
+
+/*            Movielist(list = getMovies(),
+                onItemClick = {movieId -> navController.navigate(MovieScreens.Detailscreen.name + "/$movieId")},
+                onDeleteClick = {movie1 -> FavoritViewModel.addRemoveFavorit(movie1)})*/
         }
     }
 }
 
 @ExperimentalAnimationApi
 @Composable
-fun MainContent(movieList: List<Movie>, navController: NavController) {
+fun MainContent(
+    movieList: List<Movie>,
+    navController: NavController,
+    FavoritViewModel: FavoritViewModel = viewModel()) {
     LazyColumn {
         items(movieList) { movie ->
-            MovieRow(movie) { movieId ->
-                Log.d("MainContent", "My value: $movieId")
-                navController.navigate("detailscreen/$movieId")
+            MovieRow(movie = movie,
+                onItemClick = {movieId -> navController.navigate(MovieScreens.Detailscreen.name + "/$movieId")},
+                ){
+                FavoritIcon(movie,FavoritViewModel.checkIfFavorit(movie)){ movie ->
+                    FavoritViewModel.addRemoveFavorit(movie)
+                }
             }
         }
     }
+
+
 }
+

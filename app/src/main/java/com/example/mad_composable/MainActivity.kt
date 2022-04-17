@@ -2,6 +2,7 @@ package com.example.mad_composable
 
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.*
@@ -32,18 +33,18 @@ class MainActivity : ComponentActivity() {
         setContent {
                 //HomeScreen(movieList = getMovies())
                 MyNavigation()
+                Log.d("test", "test1")
 
         }
     }
 }
-
+/*
 @Composable
 fun MyApp(content: @Composable () -> Unit) {
     var showMenu by remember {
         mutableStateOf(false)
     }
-
-
+    
     MAD_ComposableTheme {
         // A surface container using the 'background' color from the theme
         Scaffold(
@@ -83,76 +84,6 @@ fun MyApp(content: @Composable () -> Unit) {
 }
 
 
-@ExperimentalAnimationApi
-@Composable
-fun MovieRow(movie: Movie, onItemClick: (String) -> Unit = {}){
-
-    var expandMovieRow by remember {
-        mutableStateOf(false)
-    }
-
-    Card(
-        modifier = Modifier
-            .padding(4.dp)
-            .fillMaxHeight()
-            .fillMaxWidth()
-            .clickable { onItemClick(movie.id) },
-
-        shape = RoundedCornerShape(corner = CornerSize(16.dp)),
-        elevation = 6.dp
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(4.dp)
-        ) {
-            Surface(
-                modifier = Modifier
-                    .size(130.dp)
-                    .padding(12.dp),
-                elevation = 6.dp
-            ) {
-                Icon(imageVector = Icons.Default.AccountBox, contentDescription = "movie pic")
-
-            }
-            Column {
-                Text(text = movie.title, style = MaterialTheme.typography.h6)
-                Text("Director: ${movie.director}", style = MaterialTheme.typography.body2)
-                Text("Released: ${movie.year}", style = MaterialTheme.typography.body2)
-
-                AnimatedVisibility(
-                    visible = expandMovieRow,
-                    enter = slideInHorizontally(
-                        initialOffsetX = { fullWidth -> fullWidth },
-                    ) + fadeIn(),
-                    exit = slideOutHorizontally(),
-                )
-                {
-                    Column(modifier = Modifier.padding(4.dp)) {
-
-                        Text("Plot: ${movie.plot}", style = MaterialTheme.typography.body2)
-                        Divider(
-                            color = Color.LightGray,
-                            modifier = Modifier
-                                .height(1.dp)
-                                .fillMaxWidth()
-                        )
-                        Text("Actors: ${movie.actors}", style = MaterialTheme.typography.body2)
-                        Text("Rating: ${movie.rating}", style = MaterialTheme.typography.body2)
-
-                    }
-                }
-
-                Icon(
-                    imageVector = if (expandMovieRow) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowUp,
-                    contentDescription = "KeyboardArrowUp",
-                    modifier = Modifier.clickable { expandMovieRow = !expandMovieRow },
-                    )
-
-            }
-        }
-    }
-}
-
 
 @ExperimentalAnimationApi
 @Preview(showBackground = true)
@@ -162,3 +93,5 @@ fun DefaultPreview() {
 
     }
 }
+
+*/
